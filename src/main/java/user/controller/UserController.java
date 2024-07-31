@@ -28,4 +28,12 @@ public class UserController {
         return ResponseEntity.ok().body(responseDto);
     }
 
+    @PostMapping("/sign")
+    public ResponseEntity<SignResponseDto> sign(@RequestBody SignRequestDto requestDto, HttpServletResponse response){
+        User signedUser = userService.sign(requestDto);
+        String token = jwtUtil.createToken(signedUser.getUserId(), signedUser.getUsername(), signedUser.getNickname(), signedUser.getRole());
+        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        SignResponseDto responseDto = new SignResponseDto(token);
+        return ResponseEntity.ok().body(responseDto);
+    }
 }

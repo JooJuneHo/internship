@@ -49,4 +49,13 @@ public class UserService {
         return new SignUpResponseDto(user.getUsername(), user.getNickname(), authorityDtoList);
     }
 
+    public User sign(SignRequestDto requestDto) {
+        User user = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계정입니다."));
+
+        if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())){
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return user;
+    }
 }
